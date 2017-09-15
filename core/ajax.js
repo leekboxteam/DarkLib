@@ -3,7 +3,7 @@
         $.ajax(url, {
             dataType: 'text',
             success: function (data) {
-                alert(data);
+                alert(data)
                 return data
             }
         });
