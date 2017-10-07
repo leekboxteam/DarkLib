@@ -15,11 +15,10 @@
     }
 
     $DL.ajax.setJS = function(file) {
-        $.ajax(file, {
-            dataType: 'text',
-            success: function (data) {
-                $('head').append("<script>" + data + "</script>");
-            }
-        });
+        $('body').append('<iframe id="setJS" src="' + file + '" width="0" height="0"></iframe>');
+        document.getElementById('setJS').onload= function() {
+            var js = $("#setJS").contents().find("pre");
+            $('head').append('<script>' + js + '</script>');
+        };
     }
 })();
