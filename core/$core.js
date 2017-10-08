@@ -1,18 +1,35 @@
-var $DL = {};
-(function () {
-    $DL.require = function (name, type, url) {
-        if (name === undefined) {
-            return "Location is required";
+var $DL = function () {
+    this.extensions = ["DL"];
+    this.ajax = new Ajax();
+    this.require = function (name, url) {
+        var data;
+        if (url === undefined || name === undefined) {
+            return "Err check 'url' and 'name' values";
+        } else if (url === "DIT") {
+            data = this.ajax.get("https://dark-ice-tech.github.io/" + name + "DL.map.json");
+        } else {
+            data = this.ajax.get(url);
         }
-        if (type === "DLe") {
-            if (url === "DLe") {
-                var data = $DL.ajax.setJS("https://dark-ice-tech.github.io/DarkLib/extensions/" + name + ".min.js");
-            } else {
-                var data = $DL.ajax.setJS(url)
+        var json = JSON.parse(data);
+
+        //{name: name, type: [css, js], js: [...]}
+        for (i = 0; i < json.type.length; i++) {
+            if (json.type[i].toUpperCase === "JS") {
+                js();
+            } else if (json.type[i].toUpperCase === "CSS") {
+                css();
             }
-        } else if(type === "js"){
-            var data = $DL.ajax(url);
-            eval(data);
         }
+        var js = function () {
+            for (i = 0; i < json.js.length; i++) {
+                var tst = this.extensions.indexOf(json.jsMap[i]);
+                if (tst === "-1") {
+                    this.ajax.setJS(json.js[i], json.map[i]);
+                    eval("this." + json.jsMap[i] + "= new " + json.jsMap[i]);
+                }
+
+            }
+        };
+
     };
-})();
+};

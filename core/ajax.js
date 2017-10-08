@@ -1,24 +1,21 @@
-(function () {
-    $DL.ajax = {};
-
-    $DL.ajax.setHTML = function(file, div) {
-        $(div).load(file);
-    }
-
-    $DL.ajax.setCSS = function(file) {
-        $.ajax(file, {
+var Ajax = function () {
+    this.get = function (url) {
+        var data;
+        $.ajax(url, {
             dataType: 'text',
-            success: function (data) {
-                $('head').append("<style>" + data + "</style>");
-            }
+            success: function (data1) {
+                data = data1;
+            },
+            async: false
         });
-    }
-
-    $DL.ajax.setJS = function(file) {
-        $('body').append('<iframe id="setJS" src="' + file + '" width="0" height="0"></iframe>');
-        document.getElementById('setJS').onload= function() {
-            var js = $("#setJS").contents().find("pre");
-            $('head').append('<script>' + js + '</script>');
-        };
-    }
-})();
+        return data;
+    };
+    this.setCss = function (file) {
+        var data = this.get(file);
+        $('head').append("<style>" + data + "</style>");
+    };
+    this.setJS = function (file) {
+        var data = this.get(file);
+        $('head').append("<script>" + data + "</script>");
+    };
+};
